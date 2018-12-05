@@ -28,7 +28,7 @@ function DisplayDescription(x,y, color, text)
 end
 
 function DrawArea(camera, range, pos)
-  local step = (math.pi * 2.0) / 10.0;
+  local step = (math.pi * 2.0) / 60.0;
   local a = 0.0;
   
   local oldpos = Vector3(0,0,0)
@@ -52,7 +52,7 @@ function DrawArea(camera, range, pos)
 	if camera:WorldToScreen(newpos, sp) and camera:WorldToScreen(oldpos, ep) then
 	  --g_App.DirectX:Draw2DLine(sp.x,sp.y,ep.x,ep.y,2.0,clYellow)	  
 	  oldpos = newpos	  
-	  g_FontMyPCInfo:Draw(sp.x, sp.y, 0, 0, clYellow, "x")
+	  g_FontMyPCInfo:Draw(sp.x, sp.y, 0, 0, clBlue, ".")
 	end
 		
   until a > math.pi * 2.0
@@ -88,13 +88,13 @@ function OnUpdate()
 	  if true then
 
 	    local pos = pc:GetPos()
-	      --DrawArea(camera, 60.0, pos)
+	      DrawArea(camera, 60.0, pos)
 	  
 	    if camera:WorldToScreen(pos,screen) then
 		  		  
 	      --g_FontMyPCInfo:Draw(screen.x,screen.y,0,0,clRed, string.format("%1.0f %1.0f %1.0f", pos.x, pos.y, pos.z))
 		  
-		  g_FontMyPCInfo:Draw(screen.x,screen.y,0,0,clYellow, string.format("%d", pc:GetState()))
+		  g_FontMyPCInfo:Draw(screen.x,screen.y,0,0,clYellow, string.format("%s State: %d", pc:GetNameA(), pc:GetState()))
 		end
 	  else
 	    -- this is my own character
