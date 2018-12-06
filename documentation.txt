@@ -1,0 +1,106 @@
+``
+globals func
+
+function ARGB(char a, char r, char g, char b)
+function print(text)
+function LOWORD(int val)
+function HIWORD(int val)
+
+globals const
+
+EVENT_FRAMERENDER_UPDATE
+EVENT_OUTPACKET
+EVENT_WINDOWPROC
+
+g_App CApplication class
+
+  function AllocConsole()
+  function KeyDown(int key)
+  function KeyUp(int key)
+  function RegisterEventListener(EVENTID eventId, function callbackProc): int
+     EVENTID - EVENT_FRAMERENDER_UPDATE
+	   callbackProc syntax: function callbackName()
+	 
+     EVENTID - EVENT_OUTPACKET 
+	   callbackProc syntax: function callbackName(data) //"data" is CInPacket class, see its definition below
+	   
+     EVENTID - EVENT_WINDOWPROC
+	   callbackProc syntax: function callbackName(msg) //"msg" is MSG struct, see its definition below
+  
+  property DirectX: CDirectX class
+  property Game: CMS2Environment class
+
+
+CDirectX class
+  function DrawFilledCircle(float x, float y, float r, float smoothness, D3DCOLOR color)
+  function DrawCircle(float x, float y, float r, float smoothness, D3DCOLOR color)
+  function CreateFont(int height, int width, int weight, bool bItalic, string faceName): CDXFont class
+  function Draw2DLine(float x, float y, float xx, float yy, float fSize, D3DCOLOR color)
+  function FillRGB(float x, float y, float width, float height, D3DCOLOR color)
+  function ReleaseFont(CDXFont font)
+
+CDXFont class 
+  function Draw(float top, float left, float right, float bottom D3DCOLOR color, string text)
+
+CMS2Environment class
+  function GetCamera(): CCameraMgr class
+  function SendPacket(COutPacket packet)
+  function GetCurrentMapID(): int
+  function GetMyPC(): MyPC class
+  function GetObjects(): table<PC class>
+  function Move2D(Vector2 pos)
+  function GetMainSystem(): CMainSystem class
+  
+COutPacket class
+  function enc1(char b)
+  function enc2(short s)
+  function enc4(int i)
+  function enc8(int64 ii)
+  function encStr(string str)
+  function encAOB(string aob)
+  function getBuffer(): string (as binary string)
+  
+CInPacket class 
+  constructor(string buffer)
+  function dec1(): char
+  function dec2(): short
+  function dec4(): int
+  function dec8(): int64
+  function getBuffer(): string
+  function getAvailable(): int
+  
+CCameraMgr class
+  function WorldToScreen([IN] Vector3 worldPos, [OUT] Vector3 screenPos): bool
+  
+PC class 
+
+  function GetName(): string
+  function GetPos(): Vector3
+  function GetHealth(): float
+  function GetMaxHealth(): float
+  function GetState(): int
+  function GetSubState(): int
+  function GetOID(): int
+  function GetType(): int
+  
+MyPC class : PC class (all those listed above +)
+
+  function GetSpeed(): float
+  function GetAttackSpeed(): float
+  function GetJump(): float
+  function SetSpeed(float speed)
+  function SetJump(float jump)  
+  function SetAttackSpeed(float attackspeed)
+  
+Vector3 class
+  constructor(float x, float y, float z)
+  property float x
+  property float y
+  property float z
+  
+Vector2 class
+  constructor(float x, float y)
+  property float x
+  property float y
+    
+ ``
