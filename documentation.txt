@@ -32,8 +32,8 @@ g_App CApplication class
 
 
 CDirectX class
-  function DrawFilledCircle(float x, float y, float r, float smoothness, D3DCOLOR color)
-  function DrawCircle(float x, float y, float r, float smoothness, D3DCOLOR color)
+  function Draw2DFilledCircle(float x, float y, float r, float smoothness, D3DCOLOR color)
+  function Draw2DCircle(float x, float y, float r, float smoothness, D3DCOLOR color)
   function CreateFont(int height, int width, int weight, bool bItalic, string faceName): CDXFont class
   function Draw2DLine(float x, float y, float xx, float yy, float fSize, D3DCOLOR color)
   function FillRGB(float x, float y, float width, float height, D3DCOLOR color)
