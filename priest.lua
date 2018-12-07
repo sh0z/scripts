@@ -6,7 +6,7 @@ function CPriestBot:__init(app)
   self.game = app.Game
   self.dx = app.DirectX
   self.fontDesc  = self.dx:CreateFont(18, 10, 400, false, "Arial")  
-  self.fontObjectList  = self.dx:CreateFont(10, 6, 400, false, "Arial")  
+  self.fontObjectList  = self.dx:CreateFont(13, 8, 400, false, "Arial")  
   self.mouse = Vector2(0,0)
   self.myPC = nil  
   self.camera = nil
@@ -215,14 +215,7 @@ function CPriestBot:ListObjects()
   local y = 100 
   local olddist = 999
   local target = nil
-  local color = clRed
-  
-  if self.enabled then
-    color = clGreen
-  end
-
-  self.fontObjectList:Draw(x,y,0,0, color, "[F1] Bot disabled")
-  y = y + 10
+    
   self.fontObjectList:Draw(x,y,0,0, clYellow, string.format("count %d", #self.objects))
   
   local out = Vector3(0,0,0)
@@ -271,6 +264,21 @@ end
 
 function CPriestBot:OnUpdate()
   --self.fontDesc:Draw(100,200,0,0, clGreen, string.format("MapID - %u", self.game:GetCurrentMapID()))
+  
+  local color = clRed
+  local sBotStatus = "OFF"
+  
+  if self.enabled then
+    sBotStatus = "ON"
+	color = clGreen
+  end
+    
+  self.fontObjectList:Draw(10,90,0,0, color, string.format("[F1] PriestBot %s", sBotStatus))
+  
+  if not self.enabled then
+    return
+  end
+
   
   self.myPC = self.game:GetMyPC()
   if not self.myPC then
