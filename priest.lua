@@ -128,7 +128,7 @@ end
 
 function CPriestBot:SkillManager(target)
   local t = self:GetClientTime() - self.time_lastheal
-  if t < 300 then
+  if t < 400 then
     return
   end
 
@@ -152,14 +152,19 @@ function CPriestBot:SkillManager(target)
   self.time_lastheal = self:GetClientTime()  
 end
 
+function CPriestBot:Macro()
+  self:QueueKeyEvent(0x14) -- T
+end
+
 function CPriestBot:BufManager()
   local t = self:GetClientTime() - self.time_bufmanager
-  if t < 1000*10 then --every 10s
+  if t < 1000*5 then --every 10s
     return
   end
-  self:ShieldOfArchon()
-  self:CelestialGuardian()
-  self:HolyRelic()
+  --self:ShieldOfArchon()
+  --self:CelestialGuardian()
+  --self:HolyRelic()
+  self:Macro()
   self.time_bufmanager = self:GetClientTime()
 end
 
