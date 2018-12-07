@@ -23,15 +23,18 @@ function CPriestBot:__init(app)
 end
 
 function CPriestBot:CelestialLight()
-  self:QueueKeyEvent(0x2D)  -- X
+  self:QueueKeyEvent(0x1E)  -- A
+  --self:QueueKeyEvent(0x2D)  -- X
 end
 
 function CPriestBot:HolyBlast()
-  self:QueueKeyEvent(0x2C) -- Z
+  self:QueueKeyEvent(0x1F) -- S
+  --self:QueueKeyEvent(0x2C) -- Z
 end
 
 function CPriestBot:HealingPreyer()
-  self:QueueKeyEvent(0x2F) -- V
+  self:QueueKeyEvent(0x21) -- F
+  --self:QueueKeyEvent(0x2F) -- V
 end
 
 function CPriestBot:ShieldOfArchon()
@@ -43,7 +46,8 @@ function CPriestBot:CelestialGuardian()
 end
 
 function CPriestBot:HolyRelic()
-  self:QueueKeyEvent(0x14) -- T
+  self:QueueKeyEvent(0x11) -- W
+  --self:QueueKeyEvent(0x14) -- T
 end
 
 function CPriestBot:GetClientTime()
@@ -63,14 +67,14 @@ function CPriestBot:KeyPressManager()
     local t = self.queuedkeys[i]
 	if t.state == 0 then
 	  local interval = self:GetClientTime() - self.time_queue
-	  if interval > 100 then
+	  if interval > 50 then
 	    t.state = 1
 	    self.app:KeyDown(t.vk)
 	    self.time_queue = self:GetClientTime()
 	  end
 	elseif t.state == 1 then
 	  local interval = self:GetClientTime() - t.t
-	  if interval > 100 then
+	  if interval > 50 then
 	    self.app:KeyUp(t.vk)
 		t.state = 2
 	  end
@@ -79,50 +83,73 @@ function CPriestBot:KeyPressManager()
 end
 
 function CPriestBot:AttackManager(target)
+
    local dist = self:GetDistance(target)
-   
    local pos = target:GetPos()
-   self:DrawArea(self.camera, 1*100, clRed, pos) -- 1m radius
-  
+    
    if dist > 2 then
      local out = Vector3(0,0,0)
-	 if self.camera:WorldToScreen(target:GetPos(), out) then
+	 if self.camera:WorldToScreen(pos, out) then
 		local screen = Vector2(out.x,out.y)
 		self.game:Move2D(screen)
 	 end
    end
-	
+   
    local _floor = math.abs(pos.z - self.myPC:GetPos().z)/100
   
-   if _floor < 1 then -- 1m above or below of local pc
-     if dist < 4 and spirit > 45 then -- 4m is the holy blast range
-         self:HolyBlast()
-	 elseif dist < 8 then
-	   self:CelestialLight()
-	 end
+   if _floor > 1 then -- 1m above or below of local pc
+   
+     -- can't hit :((
+     return
+   end
+      
+   if dist > 8 then
+     -- enemy too far	 
+	 --print("too far")
+     return
+   end
+
+   if dist > 4 then	    -- enemy only in celestial light (8m range)
+     self:CelestialLight()
+	 return
+   end
+   
+   local spirit = self.myPC:GetSpirit()
+   
+   --print(string.format("attack!! %d", self:GetClientTime()))
+
+   -- got him in my attack range!!   
+   if spirit > 45 then --check if can use holyblast
+     self:HolyBlast()
+   else -- no spirt enough :((
+     self:CelestialLight()
    end
 end
 
-function CPriestBot:HealingManager()
-  local healing = true
-  
+function CPriestBot:SkillManager(target)
   local t = self:GetClientTime() - self.time_lastheal
-  if t < 400 then
+  if t < 300 then
     return
   end
 
   local health = self.myPC:GetHealth()
   local maxHealth = self.myPC:GetMaxHealth()
-  local spirit = self.myPC:GetSpirit()
     
-  if health < maxHealth/2 + maxHealth/4 then
+  local percent = 70
+  local minHealth = (percent/100)*maxHealth
+  
+  --print(string.format("%f %f", health, minHealth))
+  
+  --print("min health %f", minHealth)
+      
+  if health < minHealth then
     self:HealingPreyer()
   else
-    healing = false
+    self:BufManager()
+    self:AttackManager(target)
   end
-  self.time_lastheal = self:GetClientTime()
   
-  return healing
+  self.time_lastheal = self:GetClientTime()  
 end
 
 function CPriestBot:BufManager()
@@ -203,14 +230,15 @@ function CPriestBot:ListObjects()
 	if pc:GetType() ~= 2 and  --drops are type 2 then we ignore them
 	   oid > 0x10000 and  --npcs oids are usually < 0x10000, not a safe way but works
 	   pc:GetHealth() > 0 and --ignore if dead
-	   pc:GetMaxHealth() > 150000.0 then --this check is for identifying targets in lulu village map, also, without this pets and players are also listed (an uid will be added soon)	   
+	   pc:GetMaxHealth() > 150000.0 
+	   then --this check is for identifying targets in lulu village map, also, without this pets and players are also listed (an uid will be added soon)	   
 	   if oid ~= self.myPC:GetOID() then	    
 	    
 		 local dist = self:GetDistance(pc)
 	     local pos = pc:GetPos()
 		 		 
 		 y = y + 10
-         self.fontObjectList:Draw(x,y,0,0, clYellow, string.format("%02.0f M %s", dist, pc:GetNameA()))
+         self.fontObjectList:Draw(x,y,0,0, clYellow, string.format("%02.0f M", dist))
 		 
 		 if self.camera:WorldToScreen(pos, out) then		  
 		   self.fontObjectList:Draw(out.x,out.y,0,0, clGreen, string.format("%1.0fM", dist))
@@ -225,11 +253,15 @@ function CPriestBot:ListObjects()
   end  
   
   -- check if our target is visible on screen
-  if target and not self.camera:WorldToScreen(target:GetPos(), out) then
-    target = nil
-  end
   
-  return target
+  if target then 
+    local pos = target:GetPos()
+	local out = Vector3(0,0,0)
+    if self.camera:WorldToScreen(pos, out) then
+	  self:DrawArea(self.camera, 1*100, clRed, pos) -- 1m radius
+	  return target
+	end
+  end  
 end
 
 function CPriestBot:OnUpdate()
@@ -242,36 +274,38 @@ function CPriestBot:OnUpdate()
   
   self.state = self.myPC:GetSubState()
   self.camera = self.game:GetCamera()
-	
+  
   self.objects = self.game:GetObjects()
+  
+  local out = Vector3(0,0,0)  
+  local pos = self.myPC:GetPos()
+    	
+  if self.camera:WorldToScreen(pos, out) then
+    self.fontObjectList:Draw(out.x,out.y,0,0, clYellow, string.format("%d", self.state))
+	self:DrawArea(self.camera, 4*100, clLightBlue, pos) --4m radius
+	self:DrawArea(self.camera, 8*100, clYellow, pos) --8m radius
+  end    
+  
   local target = self:ListObjects()
   
-  if not self:HealingManager() then
+  if not self.enabled then
+    return
+  end  
   
-	if not self.enabled then
-      return
-    end
-	
-	local out = Vector3(0,0,0)  
-    local pos = self.myPC:GetPos()
-    	
-    if self.camera:WorldToScreen(pos, out) then
-      self.fontObjectList:Draw(out.x,out.y,0,0, clYellow, string.format("%d", self.state))
-	  self:DrawArea(self.camera, 8*100, clYellow, pos) --8m radius
-    end
-	
-    if target then
-      self:AttackManager(target)
-	  self:BufManager()
-	end
+  if not target then
+    return
   end
-  self:KeyPressManager()  
+  
+  self:SkillManager(target)
+ 
+  self:KeyPressManager()
 end
 
 function CPriestBot:WindowProc(msg)
    if msg.message == WM_KEYUP then
     if msg.wParam == VK_F2 then
-      self.enabled = not self.enabled	
+      self.enabled = not self.enabled
+	  self:KeyPressManager()
 	end
   elseif msg.message == WM_MOUSEMOVE then
     self.mouse.x = LOWORD(msg.lParam)
