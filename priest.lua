@@ -1,3 +1,15 @@
+--[[
+REQUIREMENTS 
+  CelestialLight - [A]
+  HolyBlast - [S]
+  HealingPrayer - [F]
+  Macro - [T]
+    - Shield of Archon
+	- Celestial Guardian
+	- Holy Relic
+--]]
+
+
 g_PriestBot = nil
 
 class 'CPriestBot'
@@ -32,7 +44,7 @@ function CPriestBot:HolyBlast()
   --self:QueueKeyEvent(0x2C) -- Z
 end
 
-function CPriestBot:HealingPreyer()
+function CPriestBot:HealingPrayer()
   self:QueueKeyEvent(0x21) -- F
   --self:QueueKeyEvent(0x2F) -- V
 end
@@ -143,7 +155,7 @@ function CPriestBot:SkillManager(target)
   --print("min health %f", minHealth)
       
   if health < minHealth then
-    self:HealingPreyer()
+    self:HealingPrayer()
   else
     self:BufManager()
     self:AttackManager(target)
@@ -158,7 +170,7 @@ end
 
 function CPriestBot:BufManager()
   local t = self:GetClientTime() - self.time_bufmanager
-  if t < 1000*5 then --every 10s
+  if t < 1000*1 then --every 10s
     return
   end
   --self:ShieldOfArchon()
