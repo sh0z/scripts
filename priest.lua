@@ -80,11 +80,7 @@ end
 
 function CPriestBot:AttackManager(target)
    local dist = self:GetDistance(target)
-	
-   --if dist > 9 and self.myPC:GetEstamine() > 35  then
-	--self:QueueKeyEvent(0x2E) -- C celestial wings
-   --else
-	
+   
    local pos = target:GetPos()
    self:DrawArea(self.camera, 1*100, clRed, pos) -- 1m radius
   
