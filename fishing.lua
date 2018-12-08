@@ -103,7 +103,7 @@ end
 function FishingBot_OnSendPacket(p)
   --print(">> "..bytes(p:getBuffer()))
   local id = p:dec2()
-  if id == 0x12 then  -- this packet is synchronizer, we can use it as our timer     
+  if id == 0x12 then  -- this packet is a synchronizer, we can use it as our timer     
     local state = g_App.Game:GetMyPC():GetSubState()	
 	local interval = g_FishingBot:GetClientTime() - g_FishingBot.time_last
 	if interval < 500 then
