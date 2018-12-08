@@ -1,8 +1,7 @@
 # scripts
 
 Description
-
-MapleStory 2 AI Bot for Priest class.
+  - MapleStory 2 AI Bot for Priest class.
 
 PRIEST BOT 
 
