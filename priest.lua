@@ -285,7 +285,7 @@ function CPriestBot:OnUpdate()
 	color = clGreen
   end
     
-  self.fontObjectList:Draw(10,90,0,0, color, string.format("[F1] PriestBot %s", sBotStatus))
+  self.fontObjectList:Draw(10,90,0,0, color, string.format("[F2] PriestBot %s", sBotStatus))
   
   if not self.enabled then
     return
@@ -351,7 +351,7 @@ end
 function Initialize()
   g_PriestBot = CPriestBot(g_App)  
   g_App:RegisterEventListener(EVENT_FRAMERENDER_UPDATE, PriestBot_OnUpdate)
-  g_App:RegisterEventListener(EVENT_WINDOWPROC, PriestBot_WindowProc)
+  g_App:RegisterEventListener(EVENT_WINDOWPROC, PriestBot_WindowProc)  
 end
 
 Initialize()
