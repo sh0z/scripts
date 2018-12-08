@@ -19,7 +19,8 @@ HolyBlast - [S]
 
 HealingPrayer - [F]
 
-  Macro - [T]
+Macro - [T]
+
     - Shield of Archon
     - Celestial Guardian
     - Holy Relic
