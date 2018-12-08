@@ -11,14 +11,11 @@ Features
   - stop attacking if no enemies is on range.
   - jumps upward/downward if necessary to get to the enemies.
 
-PRIEST SCRIPT REQUIREMENTS
+Skills requirements
 
 CelestialLight - [A]
-
 HolyBlast - [S]
-
 HealingPrayer - [F]
-
   Macro - [T]
   
     - Shield of Archon
