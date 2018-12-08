@@ -14,10 +14,12 @@ Features
 Skills requirements
 
 CelestialLight - [A]
+
 HolyBlast - [S]
+
 HealingPrayer - [F]
+
   Macro - [T]
-  
     - Shield of Archon
     - Celestial Guardian
     - Holy Relic
