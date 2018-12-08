@@ -14,11 +14,15 @@ Features
 PRIEST SCRIPT REQUIREMENTS
 
 CelestialLight - [A]
+
 HolyBlast - [S]
+
 HealingPrayer - [F]
+
   Macro - [T]
+  
     - Shield of Archon
-	  - Celestial Guardian
-  	- Holy Relic
+    - Celestial Guardian
+    - Holy Relic
 
 NOTE: It only Works in LULU VILLAGE MAP but can be easily editted to work on any other map (it checks the mobs by their max health).
