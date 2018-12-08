@@ -137,7 +137,7 @@ function FishingBot_WindowProc(msg)
   g_FishingBot:WindowProc(msg)
 end
 
-g_App:AllocConsole()
+--g_App:AllocConsole()
 g_FishingBot = CFishingBot(g_App)
 g_App:RegisterEventListener(EVENT_FRAMERENDER_UPDATE, FishingBot_OnUpdate)
 g_App:RegisterEventListener(EVENT_WINDOWPROC, FishingBot_WindowProc)
