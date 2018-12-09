@@ -38,6 +38,8 @@ CDirectX class
   function Draw2DLine(float x, float y, float xx, float yy, float fSize, D3DCOLOR color)
   function FillRGB(float x, float y, float width, float height, D3DCOLOR color)
   function ReleaseFont(CDXFont font)
+  function DrawBorder(float x, float y, float w, float h, float px, D3DCOLOR borderColor)
+  function DrawBox(float x, float y, float w, float h, D3DCOLOR boxColor, D3DCOLOR borderColor)
 
 CDXFont class 
   function Draw(float top, float left, float right, float bottom D3DCOLOR color, string text)
@@ -82,15 +84,17 @@ PC class
   function GetSubState(): int
   function GetOID(): int
   function GetType(): int
+  function GetFacingAngle(): float -- in degree
   
 MyPC class : PC class (all those listed above +)
 
   function GetSpeed(): float
   function GetAttackSpeed(): float
   function GetJump(): float
-  function SetSpeed(float speed)
-  function SetJump(float jump)  
-  function SetAttackSpeed(float attackspeed)
+  function SetSpeed(float speed) -- can get you banned by server side-check
+  function SetJump(float jump) -- can get you banned by server side-check
+  function SetAttackSpeed(float attackspeed) -- can get you banned by server side-check
+  function SetFacingAngle(float angle) -- in degree
   
 Vector3 class
   constructor(float x, float y, float z)
