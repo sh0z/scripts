@@ -1,7 +1,7 @@
---g_App:AllocConsole()
+g_App:AllocConsole()
 print("main script loaded")
 
-require 'fishing'
 require 'colors'
 require 'windowsdef'
+require 'fishing'
 require 'priest'
