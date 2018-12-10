@@ -1,14 +1,22 @@
 --[[
 REQUIREMENTS 
-  CelestialLight - [A]
-  HolyBlast - [S]
-  HealingPrayer - [F]
+  CelestialLight - [Q]
+  HolyBlast - [W]
+  HealingPrayer - [E]
   Macro - [T]
     - Shield of Archon
 	- Celestial Guardian
 	- Holy Relic
+	- Holy symbol
+	- Celestial blessings
+	
+  NOTE:  
+    - auto dismantle system requires inventory open on 'Gear' tab
 --]]
 
+
+require 'mapmgr'
+require 'dismantlemgr'
 
 g_PriestBot = nil
 
@@ -18,7 +26,7 @@ function CPriestBot:__init(app)
   self.game = app.Game
   self.dx = app.DirectX
   self.fontDesc  = self.dx:CreateFont(18, 10, 400, false, "Arial")  
-  self.fontObjectList  = self.dx:CreateFont(13, 8, 400, false, "Arial")  
+  self.fontObjectList  = self.dx:CreateFont(13, 8, 400, false, "Arial")
   self.mouse = Vector2(0,0)
   self.myPC = nil  
   self.camera = nil
@@ -30,23 +38,28 @@ function CPriestBot:__init(app)
   self.time_bufmanager = 0
   self.time_queue = 0
   self.queuedkeys = { }
+  self.mapmgr = CMapMgr(app)
+  self.dismantlemgr = CDismantleMgr(app)
   
   print("CPriestBot()") --debug
 end
 
 function CPriestBot:CelestialLight()
-  self:QueueKeyEvent(0x1E)  -- A
+  --self:QueueKeyEvent(0x1E)  -- A
   --self:QueueKeyEvent(0x2D)  -- X
+  self.game:UseSlot(0)
 end
 
 function CPriestBot:HolyBlast()
-  self:QueueKeyEvent(0x1F) -- S
+  --self:QueueKeyEvent(0x1F) -- S
   --self:QueueKeyEvent(0x2C) -- Z
+  self.game:UseSlot(1)
 end
 
 function CPriestBot:HealingPrayer()
-  self:QueueKeyEvent(0x21) -- F
+  --self:QueueKeyEvent(0x21) -- F
   --self:QueueKeyEvent(0x2F) -- V
+  self.game:UseSlot(2)
 end
 
 function CPriestBot:ShieldOfArchon()
@@ -99,21 +112,21 @@ function CPriestBot:AttackManager(target)
    local dist = self:GetDistance(target)
    local pos = target:GetPos()
     
-   if dist > 2 then
+   if dist > 3 then
      local out = Vector3(0,0,0)
 	 if self.camera:WorldToScreen(pos, out) then
 		local screen = Vector2(out.x,out.y)
 		self.game:Move2D(screen)
 	 end
    end
-   
+   --[[
    local _floor = math.abs(pos.z - self.myPC:GetPos().z)/100
   
    if _floor > 1 then -- 1m above or below of local pc
    
      -- can't hit :((
      return
-   end
+   end--]]
       
    if dist > 8 then
      -- enemy too far	 
@@ -166,6 +179,7 @@ end
 
 function CPriestBot:Macro()
   self:QueueKeyEvent(0x14) -- T
+  --self:QueueKeyEvent(0x32) -- M
 end
 
 function CPriestBot:BufManager()
@@ -176,6 +190,7 @@ function CPriestBot:BufManager()
   --self:ShieldOfArchon()
   --self:CelestialGuardian()
   --self:HolyRelic()
+  self.dismantlemgr:Dismantle()
   self:Macro()
   self.time_bufmanager = self:GetClientTime()
 end
@@ -246,6 +261,8 @@ function CPriestBot:ListObjects()
 	    
 		 local dist = self:GetDistance(pc)
 	     local pos = pc:GetPos()
+		 
+		 local _floor = math.abs(pos.z - self.myPC:GetPos().z)/100
 		 		 
 		 y = y + 10
          self.fontObjectList:Draw(x,y,0,0, clYellow, string.format("%02.0f M", dist))
@@ -254,7 +271,9 @@ function CPriestBot:ListObjects()
 		   self.fontObjectList:Draw(out.x,out.y,0,0, clGreen, string.format("%1.0fM", dist))
          end
 		 
-	     if dist < olddist then
+		 
+	     if _floor < 1 -- 1m above or below of local pc 
+		   and dist < olddist then
 	       olddist = dist
 		   target = pc
 	     end
@@ -274,8 +293,24 @@ function CPriestBot:ListObjects()
   end  
 end
 
+function clamp(xx)
+  local x = xx
+  if xx > 180 then
+    x = xx - 360
+  elseif xx < -180 then
+    x = xx + 360
+  elseif xx < -89 then
+    x = xx - 89
+  elseif xx > 89 then
+    x = 89
+  end
+  return x
+end
+
 function CPriestBot:OnUpdate()
   --self.fontDesc:Draw(100,200,0,0, clGreen, string.format("MapID - %u", self.game:GetCurrentMapID()))
+  
+  self.dismantlemgr:OnUpdate()
   
   local color = clRed
   local sBotStatus = "OFF"
@@ -296,9 +331,15 @@ function CPriestBot:OnUpdate()
   if not self.myPC then
     return
   end
+    
+  if self.myPC:GetHealth() <= 0 then 
+    return
+  end
   
   self.state = self.myPC:GetSubState()
   self.camera = self.game:GetCamera()
+  
+  --self.mapmgr:Debug(self)
   
   self.objects = self.game:GetObjects()
   
@@ -306,7 +347,7 @@ function CPriestBot:OnUpdate()
   local pos = self.myPC:GetPos()
     	
   if self.camera:WorldToScreen(pos, out) then
-    self.fontObjectList:Draw(out.x,out.y,0,0, clYellow, string.format("%d", self.state))
+    --self.fontObjectList:Draw(out.x,out.y,0,0, clYellow, string.format("%d", self.state))
 	self:DrawArea(self.camera, 4*100, clLightBlue, pos) --4m radius
 	self:DrawArea(self.camera, 8*100, clYellow, pos) --8m radius
   end    
@@ -320,13 +361,23 @@ function CPriestBot:OnUpdate()
   if not target then
     return
   end
-  
-  self:SkillManager(target)
+    
  
+  local dir = target:GetPos() - pos
+  local dist = self:GetDistance(target)
+  
+  local newangle = math.atan(dir.y, dir.x) * 180/math.pi
+  self.myPC:SetFacingAngle(newangle - 280)  
+  self.fontObjectList:Draw(out.x,out.y,0,0, clYellow, string.format("%d %1.0f", self.state, newangle))
+        
+  self:SkillManager(target) 
   self:KeyPressManager()
 end
 
 function CPriestBot:WindowProc(msg)
+  
+  self.dismantlemgr:WindowProc(msg)
+  
    if msg.message == WM_KEYUP then
     if msg.wParam == VK_F2 then
       self.enabled = not self.enabled
