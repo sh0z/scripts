@@ -79,7 +79,8 @@ CCameraMgr class
   
 PC class 
 
-  function GetName(): string
+  function GetNameA(): string
+  function GetNameW(): wstring
   function GetPos(): Vector3
   function GetHealth(): float
   function GetMaxHealth(): float
