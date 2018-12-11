@@ -17,6 +17,11 @@ function CDismantleMgr:GetClientTime()
 end
 
 function CDismantleMgr:Dismantle()
+ 
+  if not self.enabled then
+    return
+  end
+
   local interval = self:GetClientTime() - self.time_last
   if interval < self.interval then
     return
