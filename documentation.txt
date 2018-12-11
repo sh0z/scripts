@@ -45,6 +45,9 @@ CDXFont class
   function Draw(float top, float left, float right, float bottom D3DCOLOR color, string text)
 
 CMS2Environment class
+  function UseSlot(slot)
+  function DismantleItems(int slotStart, slotEnd) -- requires inventory open 
+  function DismantleItem(int slot) -- requires inventory open
   function GetCamera(): CCameraMgr class
   function SendPacket(COutPacket packet)
   function GetCurrentMapID(): int
@@ -76,7 +79,8 @@ CCameraMgr class
   
 PC class 
 
-  function GetName(): string
+  function GetNameA(): string
+  function GetNameW(): wstring
   function GetPos(): Vector3
   function GetHealth(): float
   function GetMaxHealth(): float
