@@ -13,7 +13,8 @@ EVENT_OUTPACKET
 EVENT_WINDOWPROC
 
 g_App CApplication class
-
+  function GetLicenseTime(): int
+  function GetVersion(): int
   function AllocConsole()
   function KeyDown(int key)
   function KeyUp(int key)
