@@ -13,7 +13,6 @@ EVENT_OUTPACKET
 EVENT_WINDOWPROC
 
 g_App CApplication class
-  function GetLicenseTime(): int
   function GetVersion(): int
   function AllocConsole()
   function KeyDown(int key)
@@ -76,7 +75,7 @@ CInPacket class
   function getAvailable(): int
   
 CCameraMgr class 
-  function GetCurrentZoom(): float
+  function GetMaxZoomm(): float
   function SetMaxZoom(float maxZoomValue)
   function WorldToScreen([IN] Vector3 worldPos, [OUT] Vector3 screenPos): bool
   
