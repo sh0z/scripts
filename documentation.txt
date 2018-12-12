@@ -55,6 +55,7 @@ CMS2Environment class
   function GetObjects(): table<PC class>
   function Move2D(Vector2 pos)
   function GetMainSystem(): CMainSystem class
+  function CollisionCheck([in] Vector3 worldPos, [OUT] COLLISIONINFO info): bool
   
 COutPacket class
   function enc1(char b)
@@ -101,6 +102,10 @@ MyPC class : PC class (all those listed above +)
   function SetJump(float jump) -- can get you banned by server side-check
   function SetAttackSpeed(float attackspeed) -- can get you banned by server side-check
   function SetFacingAngle(float angle) -- in degree
+
+COLLISIONINFO class
+  constructor()
+  Vector3 collisionPos
   
 Vector3 class
   constructor(float x, float y, float z)
