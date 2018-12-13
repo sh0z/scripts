@@ -1,4 +1,3 @@
-``
 globals func
 
 function ARGB(char a, char r, char g, char b)
@@ -53,6 +52,7 @@ CMS2Environment class
   function GetCurrentMapID(): int
   function GetMyPC(): MyPC class
   function GetObjects(): table<PC class>
+  function GetInteractObjects(): table<CInteractObject class>
   function Move2D(Vector2 pos)
   function GetMainSystem(): CMainSystem class
   function CollisionCheck([in] Vector3 worldPos, [OUT] COLLISIONINFO info): bool
@@ -79,9 +79,12 @@ CCameraMgr class
   function GetMaxZoomm(): float
   function SetMaxZoom(float maxZoomValue)
   function WorldToScreen([IN] Vector3 worldPos, [OUT] Vector3 screenPos): bool
+
+CInteractObject class
+  function GetPos(): Vector3
+  function GetID(): string 
   
 PC class 
-
   function GetNameA(): string
   function GetNameW(): wstring
   function GetPos(): Vector3
@@ -94,7 +97,6 @@ PC class
   function GetFacingAngle(): float -- in degree
   
 MyPC class : PC class (all those listed above +)
-
   function GetSpeed(): float
   function GetAttackSpeed(): float
   function GetJump(): float
@@ -117,5 +119,3 @@ Vector2 class
   constructor(float x, float y)
   property float x
   property float y
-    
- ``
