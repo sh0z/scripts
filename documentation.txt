@@ -56,6 +56,7 @@ CMS2Environment class
   function Move2D(Vector2 pos)
   function GetMainSystem(): CMainSystem class
   function CollisionCheck([in] Vector3 worldPos, [OUT] COLLISIONINFO info): bool
+  function GetSlotItemID(int slot): int
   
 COutPacket class
   function enc1(char b)
